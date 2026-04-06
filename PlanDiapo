@@ -1,0 +1,73 @@
+plan :
+1- Titre et Introduction
+2- Objectifs du Projet
+3- Organisation et Travail d'Équipe
+4- Chronologie et Étapes Clés
+5- Architecture Logicielle & Workflow
+6- Modélisation Physique
+7- Fonctionnalités Bonus
+8- Démonstration
+9- Difficultés Rencontrées & Solutions
+10- Conclusion
+11- Réfèrence
+
+
+-  Titre et Introduction
+Visuel : Une belle image de bateau ou une capture d'écran de votre jeu.
+Contenu : * Titre du projet : "Course de Bateaux en C++"
+Noms des membres de l'équipe.
+Nom du module et de l'intervenant (Jean-Philip Royer).
+Logo de votre université/école.
+
+-  Objectifs du Projet
+Contenu :
+Créer un jeu de course 2D fonctionnel.
+Apprendre à utiliser des bibliothèques externes (SFML pour le visuel, LibPhysics pour le moteur).
+Maitriser l'outil de build CMake.
+Mettre en pratique les concepts de la Programmation Orientée Objet (C++).
+
+-  Organisation et Travail d'Équipe
+Contenu :
+Répartition des tâches : Qui a fait quoi (ex: Physique vs Interface vs Logique de course).
+Gestion de version : Utilisation de Git/GitHub (gestion des branches, merge).
+Communication : Rythme de travail et outils utilisés (Discord, Trello, etc.).
+
+- Chronologie et Étapes Clés
+Contenu (Frise chronologique) :
+Semaine 1-2 : Configuration CMake et première fenêtre SFML.
+Semaine 3-4 : Intégration du moteur physique et déplacement du bateau.
+Semaine 5-6 : Création du circuit, chronomètre et conditions de victoire.
+
+- Architecture Logicielle & Workflow
+Contenu :
+Schéma simplifié de la boucle de jeu (Game Loop) :
+Récupération des événements (clavier/souris).
+Mise à jour de la physique (LibPhysics).
+Rendu graphique (SFML).
+
+- Modélisation Physique 
+Contenu :
+Explication du RigidBody et de la PhysicsEngine.
+Les forces appliquées : Poussée des hélices, frottement de l'eau (drag).
+Gestion des repères : Expliquer le défi du passage du "Repère Monde" (physique) au "Repère Pixels" (affichage).
+
+Diapo 8 : Fonctionnalités Bonus
+Contenu : (ex: Mode 2 joueurs, obstacles, sons, sprites personnalisés, menus).
+
+Diapo 9 : Démonstration 
+Contenu :
+Lancer une courte vidéo de 30 secondes ou faire une démo en direct si le matériel le permet.
+
+Diapo 7 : Difficultés Rencontrées & Solutions
+Contenu :
+Difficulté : Inversion de l'axe Y entre la physique et l'écran. -> Solution : Fonction de conversion mathématique.
+Difficulté : Instabilité de la simulation selon les PC. -> Solution : Utilisation de sf::Clock pour un mouvement dépendant du temps (dt).
+Difficulté : Problèmes de "linkage" des bibliothèques. -> Solution : Configuration rigoureuse du fichier CMakeLists.txt.
+
+Diapo 10 : Conclusion
+Contenu :
+Bilan : Ce que ce projet vous a apporté (rigueur technique, travail de groupe).
+Perspectives : Ce que vous auriez fait avec plus de temps (ex: Intelligence Artificielle pour des bateaux adverses).
+
+Diapo 11 : Références
+Références : SFML, LibPhysics, Documentation C++.
