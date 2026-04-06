@@ -51,23 +51,23 @@ Explication du RigidBody et de la PhysicsEngine.
 Les forces appliquées : Poussée des hélices, frottement de l'eau (drag).
 Gestion des repères : Expliquer le défi du passage du "Repère Monde" (physique) au "Repère Pixels" (affichage).
 
-Diapo 8 : Fonctionnalités Bonus
+- Fonctionnalités Bonus
 Contenu : (ex: Mode 2 joueurs, obstacles, sons, sprites personnalisés, menus).
 
-Diapo 9 : Démonstration 
+- Démonstration 
 Contenu :
 Lancer une courte vidéo de 30 secondes ou faire une démo en direct si le matériel le permet.
 
-Diapo 7 : Difficultés Rencontrées & Solutions
+- Difficultés Rencontrées & Solutions
 Contenu :
 Difficulté : Inversion de l'axe Y entre la physique et l'écran. -> Solution : Fonction de conversion mathématique.
 Difficulté : Instabilité de la simulation selon les PC. -> Solution : Utilisation de sf::Clock pour un mouvement dépendant du temps (dt).
 Difficulté : Problèmes de "linkage" des bibliothèques. -> Solution : Configuration rigoureuse du fichier CMakeLists.txt.
 
-Diapo 10 : Conclusion
+- Conclusion
 Contenu :
 Bilan : Ce que ce projet vous a apporté (rigueur technique, travail de groupe).
 Perspectives : Ce que vous auriez fait avec plus de temps (ex: Intelligence Artificielle pour des bateaux adverses).
 
-Diapo 11 : Références
+- Références
 Références : SFML, LibPhysics, Documentation C++.
