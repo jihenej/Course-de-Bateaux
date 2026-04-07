@@ -1,0 +1,110 @@
+#include <SFML/Graphics.hpp>
+#include "physics/dynamicModel.h"
+#include "physics/physicsEngine.h"
+#include "physics/common.h"
+#include <iostream>
+#include <cmath>
+
+// --- FORME DU BATEAU ---
+sf::ConvexShape createBoatShape() {
+    sf::ConvexShape boat;
+    boat.setPointCount(6);
+    boat.setPoint(0, sf::Vector2f(40, 0));    
+    boat.setPoint(1, sf::Vector2f(10, 15));   
+    boat.setPoint(2, sf::Vector2f(-20, 12));  
+    boat.setPoint(3, sf::Vector2f(-35, 0));   
+    boat.setPoint(4, sf::Vector2f(-20, -12)); 
+    boat.setPoint(5, sf::Vector2f(10, -15));  
+    boat.setFillColor(sf::Color(220, 220, 220));
+    boat.setOutlineThickness(2);
+    boat.setOutlineColor(sf::Color::White);
+    return boat;
+}
+
+int main() {
+    sim::physics::PhysicsEngine engine;
+    sim::physics::DynamicModel model;
+
+    auto boatPhys = engine.createGenericBoat();
+    boatPhys->setPosition(5.0, 5.0);
+
+    sf::RenderWindow window(sf::VideoMode(1000, 800), "Boat Rotation Forced");
+    window.setFramerateLimit(60);
+
+    sf::ConvexShape boatVisual = createBoatShape();
+    sf::Clock clock;
+    const float scale = 20.0f;
+
+    double manualYaw = 0.0; // <- on gère la rotation ici
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        float deltaTime = clock.restart().asSeconds();
+        if (deltaTime > 0.1f) deltaTime = 0.1f;
+
+        // --- INPUT ---
+        double rpm = 0.0;
+        double alpha = 0.0; // gouvernail
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) rpm = 3000.0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) rpm = -2000.0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) alpha = -1.0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) alpha = 1.0;
+
+        // --- PHYSIQUE ---
+        const double rho = 1026.0;
+        auto forceDamping   = model.computeDamping(*boatPhys, rho);
+        auto forceAddedMass = model.computeAddedMass(*boatPhys);
+        auto forceActuators = model.computeActuators(*boatPhys, rpm, alpha, rho);
+
+        sim::common::ForceTorque2D totalForce;
+        totalForce.x = forceDamping.x + forceAddedMass.x + forceActuators.x;
+        totalForce.y = forceDamping.y + forceAddedMass.y + forceActuators.y;
+
+        // --- AVANCE PHYSIQUE ---
+        boatPhys->addForce(totalForce);
+        engine.step(deltaTime);
+
+        // --- ROTATION MANUELLE ---
+        double speed = std::abs(boatPhys->getState().velocity_body.x);
+        if (speed < 1.0) speed = 1.0; // vitesse minimale pour tourner
+        manualYaw += alpha * speed * 0.5 * deltaTime; // réglable
+
+        // On force le yaw dans le moteur physique
+        boatPhys->setRotation(manualYaw);
+
+        // --- WRAP SCREEN ---
+        const auto& state = boatPhys->getState();
+        double newX = state.position.x;
+        double newY = state.position.y;
+        bool out = false;
+
+        if (newX * scale > 1000) { newX = 0; out = true; }
+        if (newX * scale < 0)    { newX = 1000 / scale; out = true; }
+        if (newY * scale > 800)  { newY = 0; out = true; }
+        if (newY * scale < 0)    { newY = 800 / scale; out = true; }
+
+        if (out) {
+            boatPhys->setPosition(newX, newY);
+            boatPhys->setVelocity_body(
+                state.velocity_body.x * 0.5,
+                state.velocity_body.y * 0.5
+            );
+        }
+
+        // --- RENDU ---
+        boatVisual.setPosition(state.position.x * scale, state.position.y * scale);
+        boatVisual.setRotation(manualYaw * 180.0 / 3.14159);
+
+        window.clear(sf::Color(30, 60, 120));
+        window.draw(boatVisual);
+        window.display();
+    }
+
+    return 0;
+}
