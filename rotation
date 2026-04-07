@@ -53,8 +53,8 @@ int main() {
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) rpm = 3000.0;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) rpm = -2000.0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) alpha = -1.0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) alpha = 1.0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) alpha = -5.0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) alpha = 5.0;
 
         // --- PHYSIQUE ---
         const double rho = 1026.0;
@@ -65,18 +65,11 @@ int main() {
         sim::common::ForceTorque2D totalForce;
         totalForce.x = forceDamping.x + forceAddedMass.x + forceActuators.x;
         totalForce.y = forceDamping.y + forceAddedMass.y + forceActuators.y;
+        totalForce.z = forceDamping.z + forceAddedMass.z + forceActuators.z;
 
         // --- AVANCE PHYSIQUE ---
         boatPhys->addForce(totalForce);
         engine.step(deltaTime);
-
-        // --- ROTATION MANUELLE ---
-        double speed = std::abs(boatPhys->getState().velocity_body.x);
-        if (speed < 1.0) speed = 1.0; // vitesse minimale pour tourner
-        manualYaw += alpha * speed * 0.5 * deltaTime; // réglable
-
-        // On force le yaw dans le moteur physique
-        boatPhys->setRotation(manualYaw);
 
         // --- WRAP SCREEN ---
         const auto& state = boatPhys->getState();
@@ -91,15 +84,11 @@ int main() {
 
         if (out) {
             boatPhys->setPosition(newX, newY);
-            boatPhys->setVelocity_body(
-                state.velocity_body.x * 0.5,
-                state.velocity_body.y * 0.5
-            );
         }
 
         // --- RENDU ---
         boatVisual.setPosition(state.position.x * scale, state.position.y * scale);
-        boatVisual.setRotation(manualYaw * 180.0 / 3.14159);
+        boatVisual.setRotation(state.yaw * 180.0 / 3.14159);
 
         window.clear(sf::Color(30, 60, 120));
         window.draw(boatVisual);
