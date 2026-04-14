@@ -1,6 +1,7 @@
 #include "Jeu.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <optional>
 using namespace std;
 void lancerJeu(){
     //Initialisation de l'horloge
@@ -29,6 +30,7 @@ void lancerJeu(){
     sf::Vector2f pos = {5.0,5.0};
     //Créer objet à collecter
     int nb_collec = 5;
+    int nb_restants = nb_collec;
     srand(time(0));
     sf::CircleShape collectibles[nb_collec];
     for(int i=0;i<nb_collec;i++){
@@ -46,8 +48,8 @@ void lancerJeu(){
     //Initialisation RPM et angle
     double RPM=0;
     double degre=0;
-    int RPM_change_speed = 1000;
-    int degree_change_speed = 10;
+    int RPM_change_speed = 800;
+    int degree_change_speed = 15;
     //boucle principale
 	while(window.isOpen()){
         //Temps
@@ -62,12 +64,12 @@ void lancerJeu(){
 	    window.clear(sf::Color(30, 60, 120));
         //Input
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-            if(degre<30)
+            if(degre<40)
                 degre+=degree_change_speed*deltaTime;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            if(degre>-30)
+            if(degre>-40)
                 degre-=degree_change_speed*deltaTime;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -106,9 +108,15 @@ void lancerJeu(){
         boat.setPosition(state.position.x * scale, state.position.y * scale);
         boat.setRotation(state.yaw*180.0/3.14159);
         window.draw(boat);
-        //Dessiner les obstacles
+        //Dessiner les obstacles et tester collision avec le bateau
         for(int i=0;i<nb_collec;i++){
-            window.draw(collectibles[i]);
+            int result = boat.getGlobalBounds().intersects(collectibles[i].getGlobalBounds());
+            if(result){
+                collectibles[i].setRadius(0);
+                nb_restants--;
+            }
+            if(collectibles[i].getRadius()!=0)
+                window.draw(collectibles[i]);
         }
         //Afficher la fenêtre
         window.display();
